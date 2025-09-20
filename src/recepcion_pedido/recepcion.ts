@@ -1,8 +1,8 @@
-import { 
-  calcularTotalOpciones, 
-  calcularTotalAdicionales, 
-  haversine, 
-  calcularValorDomicilio 
+import {
+  calcularTotalOpciones,
+  calcularTotalAdicionales,
+  haversine,
+  calcularValorDomicilio
 } from "../utils/calculos.js";
 
 const form = document.getElementById("orderForm");
@@ -13,19 +13,19 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault(); // evitar recargar página
 
   // 📌 1. Datos del cliente
-  const cliente = {
-    nombre: document.getElementById("clienteNombre").value,
-    telefono: document.getElementById("clienteTelefono").value
+  const cliente : {nombre: string, telefono: string} = {
+    nombre: (document.getElementById("clienteNombre") as HTMLInputElement).value,
+    telefono: (document.getElementById("clienteTelefono") as HTMLInputElement).value
   };;
 
   // 📌 2. Datos del pedido
-  const pedido = {
-    producto: document.getElementById("producto").value,
-    personalizacion: document.getElementById("personalizacion").value,
+  const pedido : { producto : string, personalizacion: string, extras: Array<string>, fechaEntrega: string, horaEntrega: string, sorpresa: boolean} = {
+    producto: (document.getElementById("producto") as HTMLInputElement).value,
+    personalizacion: (document.getElementById("personalizacion") as HTMLInputElement).value,
     extras: Array.from(document.querySelectorAll("#extrasList li")).map(li => li.textContent),
-    fechaEntrega: document.getElementById("fechaEntrega").value,
-    horaEntrega: document.getElementById("horaEntrega").value,
-    sorpresa: document.querySelector("input[name='sorpresa']:checked")?.value
+    fechaEntrega: (document.getElementById("fechaEntrega") as HTMLInputElement ).value,
+    horaEntrega: (document.getElementById("horaEntrega") as HTMLInputElement).value,
+    sorpresa: (document.querySelector("input[name='sorpresa']:checked") as HTMLInputElement)?.checked
   };
 
   // 📌 3. Datos del destinatario
@@ -51,8 +51,26 @@ async function calcularTotales(cliente, pedido, destinatario) {
       fetch("json/adicionales.json")
     ]);
 
-    const opciones = (await opcionesRes.json()).opciones;
-    const adicionales = (await adicionalesRes.json()).adicionales;
+    const opciones = (await opcionesRes.json() as {
+      opciones: Array<{
+        opcion: number;
+        fruta: Record<string, number>;
+        flores: Record<string, number>;
+        color_cinta: string;
+        color_papel: string;
+        color_caja: string;
+        precio: number;
+        tamano_grande: boolean;
+      }>;
+    }).opciones;
+    const adicionales = (await adicionalesRes.json() as {
+      adicionales: Array<{
+        id: number;
+        nombre: string;
+        precio: number;
+      }>;
+    }
+    ).adicionales;
 
     // Buscar el producto elegido
     const producto = opciones.find(o => o.opcion === Number(pedido.producto));
