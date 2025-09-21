@@ -29,7 +29,6 @@ form === null || form === void 0 ? void 0 : form.addEventListener("submit", (e) 
         producto: document.getElementById("producto").value,
         personalizacion: document.getElementById("personalizacion").value,
         extras: Array.from(document.querySelectorAll("#extrasList li")).map(li => Number(li.id)),
-        extras: Array.from(document.querySelectorAll("#extrasList li")).map(li => Number(li.id)),
         fechaEntrega: document.getElementById("fechaEntrega").value,
         horaEntrega: document.getElementById("horaEntrega").value,
         sorpresa: (_a = document.querySelector("input[name='sorpresa']:checked")) === null || _a === void 0 ? void 0 : _a.checked
@@ -288,51 +287,5 @@ function renderizarPedidos() {
       Fecha: ${p.fechaEntrega} ${p.horaEntrega}<br>
     `;
         resumenDiv.appendChild(card);
-    });
-}
-function setProductoSelector() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const productoSelect = document.getElementById('producto');
-        const adicionalesSelect = document.getElementById('extraSelect');
-        const { opciones, adicionales } = yield getJsonData();
-        const opcionesHTML = opciones.map(opcion => `
-    <option value="${opcion.opcion}">
-      Opción ${opcion.opcion}
-    </option>
-  `).join("");
-        productoSelect.innerHTML += opcionesHTML;
-        debugger;
-        const adicionalesHTML = adicionales.map(adicional => `
-    <option value="${adicional.id}">
-      ${adicional.nombre} (+$${adicional.precio})
-    </option>
-  `).join("");
-        adicionalesSelect.innerHTML += adicionalesHTML;
-    });
-}
-function insertExtra() {
-    const button = document.getElementById('addExtraBtn');
-    const extraSelect = document.getElementById('extraSelect');
-    button.addEventListener('click', () => {
-        const selectedOption = extraSelect.options[extraSelect.selectedIndex];
-        if (selectedOption && selectedOption.value !== "") {
-            const li = document.createElement('li');
-            li.textContent = `${selectedOption.text} (${document.getElementById('extraQty').textContent})`;
-            document.getElementById('extrasList').appendChild(li);
-        }
-    });
-}
-function getJsonData() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const [opcionesRes, adicionalesRes] = yield Promise.all([
-            fetch("../json/opciones.json"),
-            fetch("../json/adicionales.json")
-        ]);
-        const opciones = (yield opcionesRes.json()).opciones;
-        const adicionales = (yield adicionalesRes.json()).adicionales;
-        return {
-            opciones,
-            adicionales
-        };
     });
 }
